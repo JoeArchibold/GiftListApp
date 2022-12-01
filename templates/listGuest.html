@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="/scripts/scripts.js" defer></script>
+    <title>{{ list.name }}</title>
+</head>
+
+<body>
+    <h1>{{ list.name }} - Guest</h1>
+
+    <div id="categoriescontainer">
+        {% for item in list.items %}
+        <h3>{{ item.name }}</h3>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

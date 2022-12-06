@@ -1,6 +1,12 @@
-from flask import Flask, render_template, request, escape
+from flask import Flask, render_template, request, escape, jsonify
+from pymongo import MongoClient
 
 app = Flask(__name__)
+
+client = MongoClient("mongodb+srv://jarchibold:6TeruB45RowBDB9d@giftlistdevdb.edublop.mongodb.net/?retryWrites=true&w=majority")
+
+db = client["GiftListDevDB"]
+
 lists = []
 
 class List:
@@ -17,18 +23,27 @@ class Item:
 
 def generateLists():
     returnList = []
-    for i in range(100):
-        listToAdd = List(i, f'List {i}')
-        for j in range(5):
-            itemToAdd = Item(f'Item {i*5+j}')
-            listToAdd.items.append(itemToAdd)
-        returnList.append(listToAdd)
+    # for i in range(100):
+    #     listToAdd = List(i, f'List {i}')
+    #     for j in range(5):
+    #         itemToAdd = Item(f'Item {i*5+j}')
+    #         listToAdd.items.append(itemToAdd)
+    #     returnList.append(listToAdd)
+    
+    # db.create_collection("lists")
+    # for i,list in enumerate(returnList):
+    #     db.lists.insert_one(
+    #         {"name": list.name, 
+    #         "id": i}
+    #     ) 
+
     return returnList
 
 @app.route("/")
 def home():
-    lists = generateLists()
-    return render_template("index.html", name="Joe", data=lists)
+    documents = list(db.lists.find())
+    lists = jsonify(documents)
+    return lists#render_template("index.html", name="Joe", data=lists)
 
 @app.route('/lists/<listId>/owner')
 def listOwner(listId):

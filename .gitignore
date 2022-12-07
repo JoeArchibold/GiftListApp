@@ -1,0 +1,12 @@
+# Ignore the __pycache__ directory
+__pycache__/
+
+# Ignore files that contain sensitive information
+secrets/
+*.env
+
+# Ignore files and directories that are specific to the development environment
+.venv/
+.pytest_cache/
+build/
+dist/

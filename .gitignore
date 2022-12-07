@@ -11,3 +11,5 @@ venv/
 pytest_cache/
 build/
 dist/
+
+__pycache__\app.cpython-310.pyc

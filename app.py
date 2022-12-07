@@ -12,6 +12,7 @@ connection_string = f'mongodb+srv://jarchibold:{password}@giftlistdevdb.edublop.
 
 client = MongoClient(connection_string)
 
+
 db = client["GiftListDevDB"]
 
 def generateLists():

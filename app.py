@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, escape, jsonify
 from pymongo import MongoClient
 import json
-import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
+
 
 with open('secrets/passwords.txt') as f:
     password = f.read()
@@ -18,8 +18,7 @@ db = client["GiftListDevDB"]
 def generateLists():
     returnList = []
 
-    #db.drop_collection("lists")
-    # for i in range(100):
+    # for i in range(10):
     #     listToAdd = {
     #         "_id": i,
     #         "name": f'List {i}', 
@@ -33,7 +32,6 @@ def generateLists():
     #         listToAdd['items'].append(itemToAdd)
     #     returnList.append(listToAdd)
     
-    # db.create_collection("lists")
     # db.lists.insert_many(returnList) 
 
     return returnList
@@ -52,9 +50,30 @@ def home():
     lists = json.loads(response.data)
     return render_template("index.html", data=lists)
 
+@app.route('/lists/create', methods=["GET", "POST"])
+def create():
+    if request.method == "POST":
+        listName = request.form.get("listName")
+        inString = request.form.get("textAdd").split(',')
+
+        itemsToAdd = [];
+        for item in inString:
+            itemsToAdd.append({
+                "name": item,
+                "isChecked": False
+            })
+
+        new_id = db.lists.find().sort("_id", -1).limit(1).next()["_id"] + 1
+
+        db.lists.insert_one({'_id': int(new_id),'name': listName , 'items': itemsToAdd})
+
+        return home()
+
+    return render_template("create.html")
+
 @app.route('/lists/<listId>/choose')
 def choose(listId):
-    return render_template("Choose.html", listId=listId)
+    return render_template("choose.html", listId=listId)
 
 @app.route('/lists/<listId>/owner')
 def listOwner(listId):
@@ -108,11 +127,7 @@ def listGuest(listId):
 
         db.lists.update_one({'_id': int(listId)}, {'$set': curList})
 
-        return render_template("listGuest.html", list=curList)
-
     return render_template("listGuest.html", list=curList)
 
 if __name__ == '__main__':
-    # run() method of Flask class runs the application
-    # on the local development server.
     app.run()

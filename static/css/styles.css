@@ -1,0 +1,30 @@
+.main-container {
+    text-align: center;
+}
+
+.centered-buttons {
+    text-align: center;
+    margin: 0 auto;
+}
+
+.list-buttons {
+    border-radius: 10%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    background-color: lightgray;
+}
+
+.list-buttons:hover {
+    background-color: darkgray;
+}
+
+.add-button {
+    border-radius: 10%;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    background-color: lightgreen;
+}
+
+.add-button:hover {
+    background-color: green;
+}

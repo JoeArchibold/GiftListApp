@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="/scripts/scripts.js" defer></script>
+    <title>Create a List</title>
+</head>
+
+<body>
+    <h1>Create a List</h1>
+
+    <form action="/lists/create", method="post">
+        <label for="listName">Name of List:</label>
+        <input id="listName" name="listName" type="text"><br>
+
+        <label for="textAdd">Starting Items (you can add and remove more later):</label>
+        <input id="textAdd" name="textAdd" type="text"><br>
+
+        <input type="submit" value="Create List">
+    </form>
+
+    <a href="/"><button>Back</button></a>
+
+</body>
+</html>

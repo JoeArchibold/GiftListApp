@@ -12,13 +12,13 @@
 <body>
     <h1>Add Items to  {{ list.name }}</h1>
 
-    <form action="/lists/{{list.id}}/add", method="post">
+    <form action="/lists/{{list._id}}/add", method="post">
         <label for="textAdd">Items to add:</label>
         <input id="textAdd" name="textAdd" type="text"><br>
         <input type="submit" value="Add Items">
     </form>
 
-    <a href="/lists/{{list.id}}/owner"><button>Back</button></a>
+    <a href="/lists/{{list._id}}/owner"><button>Back</button></a>
 
 </body>
 </html>

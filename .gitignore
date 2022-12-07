@@ -4,9 +4,10 @@ __pycache__/
 # Ignore files that contain sensitive information
 secrets/
 *.env
+*.ini
 
 # Ignore files and directories that are specific to the development environment
-.venv/
-.pytest_cache/
+venv/
+pytest_cache/
 build/
 dist/

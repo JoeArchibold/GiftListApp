@@ -6,18 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <script src="/scripts/scripts.js" defer></script>
-    <title>Gist Lists</title>
+    <title>{{ Owner or Guest }}</title>
 </head>
 
 <body>
-    <h1>Welcome</h1>
+    <h1>Are you the owner or a guest?</h1>
 
-    <div id="categoriescontainer">
-        {% for list in data %}
-        <a href="/lists/{{list._id}}/choose"><button>{{ list.name }}</button></a>
-        <br>
-        {% endfor %}
-    </div>
+    <a href="/lists/{{listId}}/owner"><button>Owner</button></a>
+    <a href="/lists/{{listId}}/guest"><button>Guest</button></a><br>
+    <a href="/"><button>Home</button></a>
 
 </body>
 </html>

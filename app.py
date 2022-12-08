@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, escape, jsonify
+from flask import Flask, render_template, request, escape, jsonify, redirect, url_for
 from pymongo import MongoClient
 import json
 
@@ -43,7 +43,22 @@ def getList(listId):
     curList = json.loads(response.data)
     return curList
 
+@app.route("/login")
+def login():
+    # documents = list(db.lists.find())
+    # response = jsonify(documents)
+    # lists = json.loads(response.data)
+    return render_template("login.html")
+
 @app.route("/")
+def index():
+    return redirect(url_for("login"))
+
+@app.route('/create-account')
+def createAccount():
+    return redirect(url_for('home'))
+
+@app.route("/lists")
 def home():
     documents = list(db.lists.find())
     response = jsonify(documents)

@@ -20,6 +20,12 @@
       text-align: center;
       margin-bottom: 30px;
     }
+    h2 {
+      text-align: center;
+      color: red;
+      background-color:rgba(247, 111, 111, 0.442);
+      border: 1px solid rgba(247, 111, 111, 0.442);  
+    }
     label {
       display: block;
       margin-bottom: 10px;
@@ -62,6 +68,11 @@
 <body>
   <div class="login-container">
     <h1>Login</h1>
+
+    {% if failed == True %}
+      <h2>Incorrect username or password</h2>
+    {% endif %}
+
     <form action="/login", method="post">
       <label for="username">Username</label>
       <input type="text" id="username" name="username">

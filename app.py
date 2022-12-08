@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, escape, jsonify, redirect, url_for
 from pymongo import MongoClient
-import json
+import json, hashlib, os, datetime
 
 app = Flask(__name__, static_folder='static')
 
@@ -43,20 +43,70 @@ def getList(listId):
     curList = json.loads(response.data)
     return curList
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    # documents = list(db.lists.find())
-    # response = jsonify(documents)
-    # lists = json.loads(response.data)
-    return render_template("login.html")
+    if(request.method == "POST"):
+        username = request.form['username'].lower()
+        password = request.form['password']
+
+        user = db.users.find_one({'username': username})
+        
+        if not user:
+            return render_template("login.html", failed=True)
+
+        salt = user['salt']
+
+        saltedPass = password.encode('utf-8') + salt
+        hashedPass = hashlib.sha256(saltedPass).hexdigest()
+
+        if(hashedPass == user['password']):
+            return redirect(url_for('home'))
+        else:
+            return render_template("login.html", failed=True)
+
+
+
+    return render_template("login.html", failed=False)
 
 @app.route("/")
 def index():
     return redirect(url_for("login"))
 
-@app.route('/create-account')
+@app.route('/create-account', methods=["GET", "POST"])
 def createAccount():
-    return redirect(url_for('home'))
+    if(request.method == "POST"):
+        username = request.form['username'].lower()
+
+        if(db.users.find_one({'username': username})):
+            #TODO
+            pass
+
+        password = request.form['password']
+
+        if(password != request.form['password-confirm']):
+            #TODO
+            pass
+
+        salt = os.urandom(32)
+
+        saltedPass = password.encode('utf-8') + salt
+        hashedPass = hashlib.sha256(saltedPass).hexdigest()
+
+        user = {
+            "username": username,
+            "password": hashedPass,
+            "salt": salt,
+            "name": {
+                "first": request.form['first-name'],
+                "last": request.form['last-name']
+            }
+        }
+
+        db.users.insert_one(user)
+
+        return redirect(url_for('login'))
+
+    return render_template("create-account.html")
 
 @app.route("/lists")
 def home():

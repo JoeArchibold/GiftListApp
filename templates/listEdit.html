@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/guest.css">
+    <style>
+        #textAdd {
+            width: 50%;
+            height: 5em;
+        }
+    </style>
+    <title>{{ list.name }}</title>
+</head>
+
+<body>
+    <div class="main-container">
+        <h1>Editing  {{ list.name }}</h1>
+
+        <form action="/lists/{{list._id}}/edit", method="post">
+            <label for="listName">Name of List:</label>
+            <input id="listName" name="listName" type="text" value="{{list.name}}"><br><br>
+
+            <label for="textAdd">Add Items</label><br>
+            <label for="textAdd">(separate by commas)</label><br>
+            <textarea row="5" cols="60" id="textAdd" name="textAdd" type="text"></textarea><br><br>
+
+            <label>Remove Items</label><br>
+            <table>
+                <thead>
+                <tr>
+                    <th>Remove</th>
+                    <th>Item</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for item in list['items'] %}
+                    <tr>
+                        <td class="remove">
+                            <input id="{{item.name}}" name="{{item.name}}" type="checkbox">
+                        </td>
+                        <td class="items">{{item.name}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table><br>
+
+            <input type="submit" value="Apply Changes">
+        </form><br>
+
+        <a href="/lists/{{list._id}}/owner"><button>Back</button></a>
+    </div>
+</body>
+</html>

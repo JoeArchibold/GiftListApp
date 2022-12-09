@@ -1,9 +1,9 @@
-from flask import Flask, render_template, request, escape, jsonify, redirect, url_for
+from flask import Flask, render_template, request, escape, jsonify, redirect, url_for, session
 from pymongo import MongoClient
-import json, hashlib, os, datetime
+import json, hashlib, os, secrets
 
 app = Flask(__name__, static_folder='static')
-
+app.config['SECRET_KEY'] = secrets.token_urlsafe(16)
 
 with open('secrets/passwords.txt') as f:
     password = f.read()
@@ -60,6 +60,8 @@ def login():
         hashedPass = hashlib.sha256(saltedPass).hexdigest()
 
         if(hashedPass == user['password']):
+            session['loggedIn'] = True
+            session['userId'] = str(user['_id'])
             return redirect(url_for('home'))
         else:
             return render_template("login.html", failed=True)
@@ -70,6 +72,8 @@ def login():
 
 @app.route("/")
 def index():
+    if not session.get('loggedIn') == None:
+        return redirect(url_for('home'))
     return redirect(url_for("login"))
 
 @app.route('/create-account', methods=["GET", "POST"])
@@ -195,4 +199,4 @@ def listGuest(listId):
     return render_template("listGuest.html", list=curList)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=5000, threaded=False, debug=True)

@@ -4,28 +4,43 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <script src="/scripts/scripts.js" defer></script>
+    <link rel="stylesheet" href="/static/css/guest.css">
     <title>{{ list.name }}</title>
 </head>
 
 <body>
-    <h1>{{ list.name }} - Guest</h1>
+    <div class="main-container">
+        <h1>{{ list.name }}</h1>
 
-    <form action="/lists/{{list._id}}/guest", method="post">
-        {% for item in list['items'] %}
-            {% if item.isChecked == True %}
-                <input id="{{item.name}}" name="{{item.name}}" type="checkbox" checked>
-            {% else %}
-                <input id="{{item.name}}" name="{{item.name}}" type="checkbox">
-            {% endif %}
+        <form action="/lists/{{list._id}}/guest", method="post">
+            <table>
+                <thead>
+                <tr>
+                    <th>Purchased</th>
+                    <th>Item</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for item in list['items'] %}
+                    <tr>
+                        <td class="purchased">
+                            {% if item.isChecked == True %}
+                                <input id="{{item.name}}" name="{{item.name}}" type="checkbox" checked>
+                            {% else %}
+                                <input id="{{item.name}}" name="{{item.name}}" type="checkbox">
+                            {% endif %}
+                        </td>
+                        <td class="items">{{item.name}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <input type="submit" value="Update Selected Items">
+        </form>
 
-            <label for="{{item.name}}">{{item.name}}</label><br>
-        {% endfor %}
-        <input type="submit" value="Update Selected Items">
-    </form>
+        <a href="/"><button>Home</button></a>
 
-    <a href="/"><button>Home</button></a>
+    </div>
 
 </body>
 </html>

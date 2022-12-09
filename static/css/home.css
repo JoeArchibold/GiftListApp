@@ -2,6 +2,21 @@
     text-align: center;
 }
 
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.main-container {
+    width: 80%;
+    margin: 100px auto;
+    background-color: #fff;
+    padding: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
 .centered-buttons {
     text-align: center;
     margin: 0 auto;
@@ -20,11 +35,50 @@
 
 .add-button {
     border-radius: 10%;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    border-width: 1px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     background-color: lightgreen;
 }
 
 .add-button:hover {
     background-color: green;
+}
+
+.logout {
+    border-radius: 10%;
+    border-width: 1px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    background-color: rgb(247, 79, 79);
+}
+
+.logout:hover {
+    background-color: rgb(218, 53, 53);
+}
+
+table {
+    border-collapse: collapse;
+    margin: 0 auto;
+    width: 80%;
+}
+td {
+    border: 1px solid gray;
+    padding: 0.25em;
+}
+.list-name {
+    padding-left: 10px;
+    text-align: left;
+    width: 75%
+}
+.view-button {
+    width: 25%;
+}
+th {
+    border: 1px solid black;
+    padding: 0.25em;
+    background-color: #ddd;
+}
+.spacer {
+    height: 25px;
 }

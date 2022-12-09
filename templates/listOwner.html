@@ -4,23 +4,44 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <script src="/scripts/scripts.js" defer></script>
+    <link rel="stylesheet" href="/static/css/guest.css">
+    <style>
+        table {
+            margin-bottom: .5em;
+        }
+    </style>
     <title>{{ list['name'] }}</title>
 </head>
 
 <body>
-    <h1>{{ list.name }} - Owner</h1>
+    <div class="main-container">
 
-    <div id="categoriescontainer">
-        {% for item in list['items'] %}
-        <div>{{ item.name }}</div>
-        {% endfor %}
+        <h1>{{ list.name }}</h1>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Items</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for item in list['items'] %}
+                <tr>
+                    <td>{{item.rank}}</td>
+                    <td class="items">{{item.name}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="/lists/{{list._id}}/edit"><button style="margin-bottom: .5em">Edit List</button></a><br>
+
+        <a href="/"><button>Home</button></a>
+
     </div>
 
-    <a href="/lists/{{list._id}}/add"><button>Add Items</button></a>
-    <a href="/lists/{{list._id}}/remove"><button>Remove Items</button></a><br>
-    <a href="/"><button>Home</button></a>
+    
 
 </body>
 </html>

@@ -4,23 +4,52 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" css="3">
+    <link rel="stylesheet" href="/static/css/home.css">
     <title>Gist Lists</title>
 </head>
 
 <body>
     <div class="main-container">
-        <h1>Welcome</h1>
+        <h1>Welcome {{name}}</h1>
         <h2>Lists:</h2>
 
-        <div id="categoriescontainer" class="centered-buttons">
-            {% for list in data %}
-            <a href="/lists/{{list._id}}/choose"><button class="list-buttons">{{ list.name }}</button></a>
-            <br>
-            {% endfor %}
-        </div>
+        <table>
+            <thead>
+              <tr>
+                <th>Your Lists</th>
+                <th><a href="/lists/create"><button class="add-button">Create New</button></a></th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for list in userLists %}
+                <tr>
+                    <td class="list-name">{{list.name}}</td>
+                    <td class="view-button"><a href="/lists/{{list._id}}/choose"><button>View</button></a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-        <a href="/lists/create"><button class="add-button">Add List</button></a>
+        <div class="spacer"></div>
+
+        <table>
+            <thead>
+              <tr>
+                <th>Other Lists</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for list in otherLists %}
+                <tr>
+                    <td class="list-name">{{list.name}}</td>
+                    <td class="view-button"><a href="/lists/{{list._id}}/choose"><button>View</button></a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="/logout"><button class="logout">Logout</button></a>
 
     </div>
 

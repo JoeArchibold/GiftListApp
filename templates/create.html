@@ -4,25 +4,37 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <script src="/scripts/scripts.js" defer></script>
+    <link rel="stylesheet" href="/static/css/guest.css">
+    <style>
+        #textAdd {
+            width: 50%;
+            height: 5em;
+        }
+        form {
+            margin-bottom: .25em;
+        }
+    </style>
     <title>Create a List</title>
 </head>
 
 <body>
-    <h1>Create a List</h1>
+    <div class="main-container">
+        <h1>Create a List</h1>
 
-    <form action="/lists/create", method="post">
-        <label for="listName">Name of List:</label>
-        <input id="listName" name="listName" type="text"><br>
+        <form action="/lists/create", method="post">
+            <label for="listName">Name of List:</label>
+            <input id="listName" name="listName" type="text"><br><br>
 
-        <label for="textAdd">Starting Items (you can add and remove more later):</label>
-        <input id="textAdd" name="textAdd" type="text"><br>
+            <label for="textAdd">Starting Items (you can add and remove more later)</label><br>
+            <label for="textAdd">Separate each item with a comma</label><br>
+            <textarea row="5" cols="60" id="textAdd" name="textAdd" type="text"></textarea><br>
 
-        <input type="submit" value="Create List">
-    </form>
+            <input type="submit" value="Create List">
+        </form>
 
-    <a href="/"><button>Back</button></a>
+        <a href="/"><button>Back</button></a>
+
+    </div>
 
 </body>
 </html>

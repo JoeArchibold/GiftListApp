@@ -25,9 +25,9 @@
                     <tr>
                         <td class="purchased">
                             {% if item.isChecked == True %}
-                                <input id="{{item.name}}" name="{{item.name}}" type="checkbox" checked>
+                                <input id="{{item.id}}-pur" name="{{item.id}}-pur" type="checkbox" checked>
                             {% else %}
-                                <input id="{{item.name}}" name="{{item.name}}" type="checkbox">
+                                <input id="{{item.id}}-pur" name="{{item.id}}-pur" type="checkbox">
                             {% endif %}
                         </td>
                         <td class="items">{{item.name}}</td>

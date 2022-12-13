@@ -8,7 +8,21 @@
     <style>
         #textAdd {
             width: 50%;
+            min-width: 30em;
+            max-width: 90%;
             height: 5em;
+        }
+        .rankIn {
+            max-width: 4em;
+        }
+        h3 {
+            margin-bottom: 0;
+        }
+        .items {
+            text-align: center;
+        }
+        .itemIn {
+            width: 95%;
         }
     </style>
     <title>{{ list.name }}</title>
@@ -19,17 +33,18 @@
         <h1>Editing  {{ list.name }}</h1>
 
         <form action="/lists/{{list._id}}/edit", method="post">
-            <label for="listName">Name of List:</label>
+            <label for="listName"><b>Name of List:</b></label>
             <input id="listName" name="listName" type="text" value="{{list.name}}"><br><br>
 
-            <label for="textAdd">Add Items</label><br>
+            <h3>Add Items</h3>
             <label for="textAdd">(separate by commas)</label><br>
             <textarea row="5" cols="60" id="textAdd" name="textAdd" type="text"></textarea><br><br>
 
-            <label>Remove Items</label><br>
+            <h3>Edit Current Items</h3><br>
             <table>
                 <thead>
                 <tr>
+                    <th>Rank</th>
                     <th>Remove</th>
                     <th>Item</th>
                 </tr>
@@ -37,10 +52,15 @@
                 <tbody>
                     {% for item in list['items'] %}
                     <tr>
-                        <td class="remove">
-                            <input id="{{item.name}}" name="{{item.name}}" type="checkbox">
+                        <td>
+                            <input class="rankIn" size="3" min="0" max="1000000" id="{{item.id}}-rank" name="{{item.id}}-rank" type="number" value="{{item.rank}}">
                         </td>
-                        <td class="items">{{item.name}}</td>
+                        <td class="remove">
+                            <input id="{{item.id}}-remove" name="{{item.id}}-remove" type="checkbox">
+                        </td>
+                        <td class="items">
+                            <input class="itemIn" id="{{item.id}}-name" name="{{item.id}}-name" type="text" value="{{item.name}}">
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

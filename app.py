@@ -31,7 +31,8 @@ def generateLists():
             itemToAdd = {
                 "name": f'Item {j}',
                 "isChecked": False,
-                "rank": j + 1
+                "rank": j + 1,
+                "id": j
             }
             listToAdd['items'].append(itemToAdd)
         returnList.append(listToAdd)
@@ -39,6 +40,20 @@ def generateLists():
     db.lists.insert_many(returnList) 
 
     return returnList
+
+def fixItems():
+    documents = list(db.lists.find())
+    response = jsonify(documents)
+    lists = json.loads(response.data)
+
+    for curlist in lists:
+        for val, item in enumerate(curlist['items']):
+            curlist['items'][val]['id'] = val
+
+        db.lists.update_one({'_id': int(curlist['_id'])}, {'$set': curlist})
+        
+
+
 
 def getList(listId):
     listId = int(listId)
@@ -162,7 +177,8 @@ def create():
             itemsToAdd.append({
                 "name": item,
                 "isChecked": False,
-                "rank": len(itemsToAdd)+1
+                "rank": 0,
+                "id": len(itemsToAdd)
             })
 
         new_id = db.lists.find().sort("_id", -1).limit(1).next()["_id"] + 1
@@ -214,7 +230,7 @@ def listGuest(listId):
     curList = getList(listId)
     if request.method == "POST":
         for val,item in enumerate(curList['items']):
-            if request.form.get(item['name']) == 'on':
+            if request.form.get(f'{item["id"]}-pur') == 'on':
                 curList['items'][val]['isChecked'] = True
             else:
                 curList['items'][val]['isChecked'] = False
@@ -239,15 +255,16 @@ def listEdit(listId):
 
     if request.method == "POST":
         for val,item in enumerate(curList['items']):
-            if request.form.get(item['name']) == 'on':
+            if request.form.get(f'{item["id"]}-remove') == 'on':
                 curList['items'][val] = None
+            else:
+                curList['items'][val]['rank'] = request.form.get(f'{item["id"]}-rank')
+                curList['items'][val]['name'] = request.form.get(f'{item["id"]}-name')
 
         curList['items'] = list(filter(None, curList['items']))
 
-        for val,item in enumerate(curList['items']):
-            curList['items'][val]['rank'] = val+1
-
         inString = [str.strip() for str in request.form.get("textAdd").split(',')]
+
 
         for item in inString:
             if item == "":
@@ -256,9 +273,12 @@ def listEdit(listId):
             curList['items'].append({
                 "name": item,
                 "isChecked": False,
-                "rank": len(curList['items']) + 1
+                "rank": 0,
+                "id": max(curList['items'], key=lambda x: x['id'])['id'] + 1
             })
         
+        curList['items'] = sorted(curList['items'], key=lambda x: int(x['rank']) if int(x['rank']) > 0 else 1000000)
+
         curList['name'] = request.form.get("listName")
 
         db.lists.update_one({'_id': int(listId)}, {'$set': curList})
@@ -266,6 +286,7 @@ def listEdit(listId):
         return redirect(f'/lists/{listId}/owner')
 
     return render_template("listEdit.html", list=curList)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, threaded=False, debug=True)

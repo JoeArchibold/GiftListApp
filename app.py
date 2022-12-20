@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, escape, jsonify, redirect, url_for, session
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 from pymongo import MongoClient
 import json, hashlib, os, secrets
 import bson

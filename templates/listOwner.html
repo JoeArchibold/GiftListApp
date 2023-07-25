@@ -25,7 +25,7 @@
                 <th>Items</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody class="itemss">
                 {% for item in list['items'] %}
                 <tr>
                     <td>{{item.rank}}</td>
@@ -37,11 +37,20 @@
 
         <a href="/lists/{{list._id}}/edit"><button style="margin-bottom: .5em">Edit List</button></a><br>
 
-        <a href="/"><button>Home</button></a>
+        <a src="/static/js/sortable.js"><button>Home</button></a>
 
     </div>
 
-    
+    <script src="/static/js/sortable.js" ></script>
+
+    <script>
+        let items = document.querySelector('.itemss')
+
+        new Sortable(items, {
+            animation: 200,
+            ghostClass: 'drag'
+        });
+    </script>
 
 </body>
 </html>

@@ -5,10 +5,10 @@ body {
     background-color: #f4f4f4;
 }
 .login-container {
-    width: 400px;
-    margin: 100px auto;
+    width: 20rem;
+    margin: 5rem auto;
     background-color: #fff;
-    padding: 30px;
+    padding: 1.5rem;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 h1 {

@@ -32,23 +32,36 @@ table {
     margin: 0 auto;
     width: 80%;
 }
+
 td {
     border: 1px solid gray;
     padding: 0.25em;
 }
-.items {
+
+.item-name {
     padding-left: 10px;
     text-align: left;
     width: 75%
 }
+
+.list-item {
+   white-space: nowrap; 
+}
+
+.list-item div {
+    display: inline-block;
+}
+
 .purchased {
     width: 25%;
 }
+
 th {
     border: 1px solid black;
     padding: 0.25em;
     background-color: #ddd;
 }
+
 .spacer {
     height: 25px;
 }

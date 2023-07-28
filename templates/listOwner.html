@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/css/owner.css">
+    <link rel="stylesheet" href="/static/css/lists.css">
     <style>
         table {
             margin-bottom: .5em;
@@ -18,33 +18,25 @@
 
         <h1>{{ list.name }}</h1>
 
-        <table>
-            <thead>
-            <tr>
-                <th>Rank</th>
-                <th>Items</th>
-            </tr>
-            </thead>
-            <tbody class="itemss">
-                {% for item in list['items'] %}
-                <tr>
-                    <td>{{item.rank}}</td>
-                    <td class="items">{{item.name}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="item">
+            {% for item in list['items'] %}
+            <div class="list-item">
+                <div>{{item.rank}}</div>
+                <div class="item-name">{{item.name}}</div>
+            </div>
+            {% endfor %}
+        </div>
 
         <a href="/lists/{{list._id}}/edit"><button style="margin-bottom: .5em">Edit List</button></a><br>
 
-        <a src="/static/js/sortable.js"><button>Home</button></a>
+        <a href="/lists"><button>Home</button></a>
 
     </div>
 
     <script src="/static/js/sortable.js" ></script>
 
     <script>
-        let items = document.querySelector('.itemss')
+        let items = document.querySelector('.items')
 
         new Sortable(items, {
             animation: 200,

@@ -9,7 +9,7 @@ app.config['SECRET_KEY'] = secrets.token_urlsafe(16)
 with open('secrets/passwords.txt') as f:
     password = f.read()
 
-connection_string = f'mongodb+srv://jarchibold:{password}@giftlistdevdb.edublop.mongodb.net/?retryWrites=true&w=majority'
+connection_string = f'mongodb+srv://jarchibold:{password}@giftlistprod.zsqr6ad.mongodb.net/?retryWrites=true&w=majority'
 
 client = MongoClient(connection_string)
 
@@ -181,7 +181,11 @@ def create():
                 "id": len(itemsToAdd)
             })
 
-        new_id = db.lists.find().sort("_id", -1).limit(1).next()["_id"] + 1
+        new_id = -1
+        try:
+            new_id = db.lists.find().sort("_id", -1).limit(1).next()["_id"] + 1
+        except:
+            new_id = 0
 
         db.lists.insert_one({'_id': int(new_id),'name': listName , 'items': itemsToAdd, 'owner': user['username']})
 

@@ -6,7 +6,7 @@ import bson
 app = Flask(__name__, static_folder='static')
 app.config['SECRET_KEY'] = secrets.token_urlsafe(16)
 
-with open('secrets/passwords.txt') as f:
+with open('secrets/devpassword.txt') as f:
     password = f.read()
 
 connection_string = f'mongodb+srv://jarchibold:{password}@giftlistdevdb.edublop.mongodb.net/?retryWrites=true&w=majority'

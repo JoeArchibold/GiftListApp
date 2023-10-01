@@ -106,14 +106,12 @@ def createAccount():
         username = request.form['username'].lower()
 
         if(db.users.find_one({'username': username})):
-            #TODO
-            pass
+            return render_template("create-account.html", username_exists=True)
 
         password = request.form['password']
 
         if(password != request.form['password-confirm']):
-            #TODO
-            pass
+            return render_template("create-account.html", password_mismatch=True)
 
         salt = os.urandom(32)
 

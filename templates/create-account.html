@@ -20,6 +20,12 @@
       text-align: center;
       margin-bottom: 30px;
     }
+    h2 {
+      text-align: center;
+      color: red;
+      background-color:rgba(247, 111, 111, 0.442);
+      border: 1px solid rgba(247, 111, 111, 0.442);  
+    }
     label {
       display: block;
       margin-bottom: 10px;
@@ -64,6 +70,13 @@
 
         <h1>Create an Account</h1>
         
+        {% if password_mismatch == True %}
+          <h2>Passwords do not match</h2>
+        {% endif %}
+        {% if username_exists == True %}
+          <h2>Username already exists</h2>
+        {% endif %}
+
         <form action="/create-account", method="post">
             <label for="first-name">First Name</label>
             <input type="text" id="first-name" name="first-name">

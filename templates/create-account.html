@@ -64,6 +64,13 @@
 
         <h1>Create an Account</h1>
         
+        {% if password_mismatch == True %}
+          <h2>Passwords do not match</h2>
+        {% endif %}
+        {% if username_exists == True %}
+          <h2>Username already exists</h2>
+        {% endif %}
+
         <form action="/create-account", method="post">
             <label for="first-name">First Name</label>
             <input type="text" id="first-name" name="first-name">

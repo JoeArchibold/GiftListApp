@@ -152,6 +152,9 @@ def home():
             userLists.append(curlist)
         else:
             otherLists.append(curlist)
+    
+    userLists = sorted(userLists, key=lambda x: x['name'])
+    otherLists = sorted(otherLists, key=lambda x: x['name'])
 
     return render_template("index.html", userLists=userLists, otherLists=otherLists, name=user['name']['first'])
 
@@ -284,6 +287,19 @@ def listEdit(listId):
         return redirect(f'/lists/{listId}/owner')
 
     return render_template("listEdit.html", list=curList)
+
+@app.route('/lists/<listId>/ownerdev')
+def listOwnerDev(listId):
+    if session.get('loggedIn') == None:
+        return redirect(url_for("login"))
+
+    user = db.users.find_one({'_id': bson.ObjectId(session['userId'])})
+    curList = getList(listId)
+
+    if curList['owner'] != user['username']:
+        return redirect(f'/lists/{listId}/guest')
+
+    return render_template("newListOwner.html", list=curList)
 
 
 if __name__ == '__main__':

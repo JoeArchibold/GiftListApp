@@ -1,12 +1,9 @@
-.main-container {
-    text-align: center;
-}
-
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
+    color: #333;
 }
 
 .main-container {
@@ -14,7 +11,8 @@ body {
     margin: 100px auto;
     background-color: #fff;
     padding: 30px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
 }
 
 .centered-buttons {
@@ -22,63 +20,76 @@ body {
     margin: 0 auto;
 }
 
+.list-buttons, .add-button, .logout {
+    border-radius: 8px;
+    margin: 10px 0;
+    transition: background-color 0.3s ease;
+}
+
 .list-buttons {
-    border-radius: 10%;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    background-color: lightgray;
+    background-color: #f0f0f0;
 }
 
 .list-buttons:hover {
-    background-color: darkgray;
+    background-color: #ddd;
 }
 
 .add-button {
-    border-radius: 10%;
-    border-width: 1px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    background-color: lightgreen;
+    background-color: #5cb85c;
+    color: #fff;
+    border: 1px solid #4cae4c;
 }
 
 .add-button:hover {
-    background-color: green;
+    background-color: #4cae4c;
 }
 
 .logout {
-    border-radius: 10%;
-    border-width: 1px;
-    margin-top: 15px;
-    margin-bottom: 15px;
-    background-color: rgb(247, 79, 79);
+    background-color: #d9534f;
+    color: #fff;
+    border: 1px solid #d43f3a;
 }
 
 .logout:hover {
-    background-color: rgb(218, 53, 53);
+    background-color: #d43f3a;
 }
 
 table {
     border-collapse: collapse;
     margin: 0 auto;
     width: 80%;
+    border: 1px solid #ddd;
+    background-color: #fff;
 }
-td {
-    border: 1px solid gray;
-    padding: 0.25em;
+
+td, th {
+    border: 1px solid #ddd;
+    padding: 0.5em;
 }
+
 .list-name {
     padding-left: 10px;
     text-align: left;
-    width: 75%
+    width: 75%;
 }
+
 .view-button {
     width: 25%;
 }
+
 th {
-    border: 1px solid black;
-    padding: 0.25em;
-    background-color: #ddd;
+    background-color: #f0f0f0;
 }
+
 .spacer {
     height: 25px;
+}
+
+td {
+    text-align: center;
+}
+
+.view-button {
+    width: 100%;
+    border-radius: 10px;
 }

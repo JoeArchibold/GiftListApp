@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/css/lists.css">
     <style>
-        table {
-            margin-bottom: .5em;
+        .delete-button {
+            cursor: pointer;
+            color: red;
         }
     </style>
     <title>{{ list['name'] }}</title>
@@ -16,31 +17,188 @@
 <body>
     <div class="main-container">
 
-        <h1>{{ list.name }}</h1>
+        <h1 contenteditable="true" enterkeyhint="done">{{ list.name }}</h1>
 
-        <div class="item">
+        <div class="item" id="sortable-list">
             {% for item in list['items'] %}
-            <div class="list-item">
-                <div>{{item.rank}}</div>
-                <div class="item-name">{{item.name}}</div>
+            <div class="list-item" id="item-{{item.id}}">
+                <div class="item-rank">{{item.rank}}</div>
+                <div class="item-name" contenteditable="true" onkeypress="updateItem(this, event)">{{item.name}}</div>
+                <div class="delete-button" onclick="deleteItem(this)">Remove</div>
             </div>
             {% endfor %}
         </div>
 
-        <a href="/lists/{{list._id}}/edit"><button style="margin-bottom: .5em">Edit List</button></a><br>
+        <div>
+            <label for="newItem">New Item:</label>
+            <input type="text" id="newItem-name" onkeypress="inputEnter(event)" placeholder="Enter new item...">
+            <input type="text" id="newItem-link" onkeypress="inputEnter(event)" placeholder="Enter link ...">
+            <button onclick="appendItem()">Add Item</button>
+        </div>
 
         <a href="/lists"><button>Home</button></a>
+
+        <button onclick="saveList()">Save List</button>
 
     </div>
 
     <script src="/static/js/sortable.js" ></script>
 
-    <script>
-        let items = document.querySelector('.item')
+    <script type="text/javascript">
+        var list = {{list|tojson}};
+        console.log(list)
 
-        new Sortable(items, {
+        updateRanks()
+
+        function inputEnter(event) {
+            if (event.keyCode == 13) {
+                    appendItem()
+            }
+        }
+
+        function updateItem(element, event) {
+            if (event.keyCode != 13) return true;
+            var listItem = element.closest('.list-item');
+            var itemId = listItem.id.substring(5)
+
+            for(var i = 0; i < list.items.length; i++) {
+                if(list.items[i].id == itemId) {
+                    list.items[i].name = element.innerHTML
+                }
+            }
+
+            event.preventDefault()
+            event.target.blur()
+        }
+
+        function appendItem() {
+
+            var newItemText = document.getElementById('newItem-name').value.trim();
+            var newItemLink = document.getElementById('newItem-link').value.trim();
+
+            console.log(newItemText)
+            console.log(newItemLink)
+
+            if (newItemText !== '') {
+                var newItem = document.createElement('div');
+                newItem.className = 'list-item';
+
+                newid = Math.max(...list.items.map(item => item.id)) + 1;
+                newRank = Math.max(...list.items.map(item => item.rank)) + 1;
+
+                newItem.id = 'item-' + newid
+
+                newListItem = {
+                    'id': newid,
+                    'isChecked': false,
+                    'name': newItemText,
+                    'rank': newRank,
+                    'link': null,
+                }
+
+                if(newItemLink != '') {
+                    if(newItemLink.indexOf(':') != -1) {
+                        newItemLink = newItemLink.substring(newItemLink.indexOf(':')+1)
+                    }
+
+                    newListItem['link'] = newItemLink
+                    newItem.innerHTML = `<div class="item-rank">${newRank}</div>
+                                         <a href="//` + newItemLink + `" target="_blank">
+                                            <div class="item-name" contenteditable="true">${newItemText}</div>
+                                         <\a>
+                                         <div class="delete-button" onclick="deleteItem(this)">Remove</div>`;
+                } else {
+                    newItem.innerHTML = `<div class="item-rank">${newRank}</div>
+                                         <div class="item-name" contenteditable="true">${newItemText}</div>
+                                         <div class="delete-button" onclick="deleteItem(this)">Remove</div>`;
+                }
+
+                
+                list.items.push(newListItem)
+
+                var itemContainer = document.getElementById('sortable-list');
+                itemContainer.appendChild(newItem);
+
+                document.getElementById('newItem-name').value = ''; // Clear the input field
+                document.getElementById('newItem-link').value = ''; // Clear the input field
+            }
+        }
+
+        function deleteItem(element) {
+            var listItem = element.closest('.list-item');
+            var itemId = listItem.id.substring(5)
+
+            for(var i = 0; i < list.items.length; i++) {
+                if(list.items[i].id == itemId) {
+                    list.items.splice(i,1)
+                    break
+                }
+            }
+
+            listItem.remove();
+
+            updateRanks()
+        }
+
+        function updateRanks() {
+            var listItems = document.querySelectorAll('.list-item');
+
+            for(var i = 0; i < listItems.length; i++) {
+                curItemId = listItems[i].id.substring(5)
+                itemRank = listItems[i].getElementsByClassName('item-rank')[0]
+                // console.log(listItems[i])
+                // console.log(itemRank)
+                itemRank.innerHTML = i+1
+                for(var j = 0; j < list.items.length; j++) {
+                    if(curItemId == list.items[j].id) {
+                        list.items[j].rank = i+1;
+                    }
+                }
+            }
+        }
+
+        function saveList() {
+            // var items = [];
+            // var listItems = document.querySelectorAll('.list-item');
+
+            // listItems.forEach(function (item) {
+            //     var itemName = item.querySelector('a').innerText;
+            //     var itemLink = item.querySelector('a').href;
+            //     items.push({ name: itemName, link: itemLink });
+            // });
+
+            // var allItems = initialItems.concat(items);
+
+            var currentPageURL = window.location.href;
+
+            console.log(JSON.stringify({ items: list.items }))
+
+            fetch(currentPageURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ items: list.items }),
+            })
+            .then(response => response.json())
+            .then(data => alert('List saved successfully'))
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occured, please try again later or contact Joe for help')
+            });
+        }
+
+    </script>
+
+    <script>
+        let items = document.getElementById('sortable-list');
+
+        const sortable = new Sortable(items, {
             animation: 200,
-            ghostClass: 'drag'
+            ghostClass: 'drag',
+            onEnd: function(evt) {
+                updateRanks()
+            },
         });
     </script>
 

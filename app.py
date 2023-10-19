@@ -204,16 +204,28 @@ def choose(listId):
         return redirect(f'/lists/{listId}/owner')
 
 
-@app.route('/lists/<listId>/owner')
+@app.route('/lists/<listId>/owner', methods=['GET', 'POST'])
 def listOwner(listId):
     if session.get('loggedIn') == None:
         return redirect(url_for("login"))
-
+    
     user = db.users.find_one({'_id': bson.ObjectId(session['userId'])})
     curList = getList(listId)
 
     if curList['owner'] != user['username']:
         return redirect(f'/lists/{listId}/guest')
+    
+    if request.method == 'POST':
+        data = request.json
+        items = data.get('items', [])
+
+        curList['items'] = items
+
+        curList['items'] = sorted(curList['items'], key=lambda x: int(x['rank']) if int(x['rank']) > 0 else 1000000)
+
+        db.lists.update_one({'_id': int(listId)}, {'$set': curList})
+
+        return jsonify({'message': 'Data received successfully'})
 
     return render_template("listOwner.html", list=curList)
 
@@ -287,19 +299,6 @@ def listEdit(listId):
         return redirect(f'/lists/{listId}/owner')
 
     return render_template("listEdit.html", list=curList)
-
-@app.route('/lists/<listId>/ownerdev')
-def listOwnerDev(listId):
-    if session.get('loggedIn') == None:
-        return redirect(url_for("login"))
-
-    user = db.users.find_one({'_id': bson.ObjectId(session['userId'])})
-    curList = getList(listId)
-
-    if curList['owner'] != user['username']:
-        return redirect(f'/lists/{listId}/guest')
-
-    return render_template("newListOwner.html", list=curList)
 
 
 if __name__ == '__main__':

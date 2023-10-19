@@ -217,8 +217,11 @@ def listOwner(listId):
     
     if request.method == 'POST':
         data = request.json
-        items = data.get('items', [])
+        tempList = data.get('list', {})
+        
+        items = tempList['items']
 
+        curList['name'] = tempList['name']
         curList['items'] = items
 
         curList['items'] = sorted(curList['items'], key=lambda x: int(x['rank']) if int(x['rank']) > 0 else 1000000)

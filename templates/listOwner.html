@@ -17,7 +17,7 @@
 <body>
     <div class="main-container">
 
-        <h1 contenteditable="true" enterkeyhint="done">{{ list.name }}</h1>
+        <h1 contenteditable="true" enterkeyhint="done" onkeypress="updateName(this, event)">{{ list.name }}</h1>
 
         <div class="item" id="sortable-list">
             {% for item in list['items'] %}
@@ -54,6 +54,15 @@
             if (event.keyCode == 13) {
                     appendItem()
             }
+        }
+
+        function updateName(element, event) {
+            if (event.keyCode != 13) return true;
+
+            list.name = element.innerHTML
+
+            event.preventDefault()
+            event.target.blur()
         }
 
         function updateItem(element, event) {
@@ -104,12 +113,12 @@
                     newListItem['link'] = newItemLink
                     newItem.innerHTML = `<div class="item-rank">${newRank}</div>
                                          <a href="//` + newItemLink + `" target="_blank">
-                                            <div class="item-name" contenteditable="true">${newItemText}</div>
+                                            <div class="item-name" contenteditable="true" onkeypress="updateItem(this, event)"">${newItemText}</div>
                                          <\a>
                                          <div class="delete-button" onclick="deleteItem(this)">Remove</div>`;
                 } else {
                     newItem.innerHTML = `<div class="item-rank">${newRank}</div>
-                                         <div class="item-name" contenteditable="true">${newItemText}</div>
+                                         <div class="item-name" contenteditable="true" onkeypress="updateItem(this, event)"">${newItemText}</div>
                                          <div class="delete-button" onclick="deleteItem(this)">Remove</div>`;
                 }
 
@@ -158,27 +167,14 @@
         }
 
         function saveList() {
-            // var items = [];
-            // var listItems = document.querySelectorAll('.list-item');
-
-            // listItems.forEach(function (item) {
-            //     var itemName = item.querySelector('a').innerText;
-            //     var itemLink = item.querySelector('a').href;
-            //     items.push({ name: itemName, link: itemLink });
-            // });
-
-            // var allItems = initialItems.concat(items);
-
             var currentPageURL = window.location.href;
-
-            console.log(JSON.stringify({ items: list.items }))
 
             fetch(currentPageURL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ items: list.items }),
+                body: JSON.stringify({ list: list }),
             })
             .then(response => response.json())
             .then(data => alert('List saved successfully'))

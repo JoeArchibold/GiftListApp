@@ -17,14 +17,15 @@
 <body>
     <div class="main-container">
 
-        <h1 contenteditable="true" enterkeyhint="done" onkeypress="updateName(this, event)">{{ list.name }}</h1>
+        <h1 contenteditable="true" enterkeyhint="done" onfocusout="updateName(this, event)" onkeypress="updateName(this, event)">{{ list.name }}</h1>
 
         <div class="item" id="sortable-list">
             {% for item in list['items'] %}
             <div class="list-item" id="item-{{item.id}}">
                 <div class="item-rank">{{item.rank}}</div>
-                <div class="item-name" contenteditable="true" onkeypress="updateItem(this, event)">{{item.name}}</div>
+                <div class="item-name" contenteditable="true" onfocusout="updateItem(this, event)" onkeyup="updateItem(this, event)">{{item.name}}</div>
                 <div class="delete-button" onclick="deleteItem(this)">Remove</div>
+                <div class="drag-handle">&#x2261;</div>
             </div>
             {% endfor %}
         </div>
@@ -32,7 +33,7 @@
         <div>
             <label for="newItem">New Item:</label>
             <input type="text" id="newItem-name" onkeypress="inputEnter(event)" placeholder="Enter new item...">
-            <input type="text" id="newItem-link" onkeypress="inputEnter(event)" placeholder="Enter link ...">
+            <input type="text" id="newItem-link" onkeypress="inputEnter(event)" placeholder="Enter link (optional)">
             <button onclick="appendItem()">Add Item</button>
         </div>
 
@@ -66,7 +67,6 @@
         }
 
         function updateItem(element, event) {
-            if (event.keyCode != 13) return true;
             var listItem = element.closest('.list-item');
             var itemId = listItem.id.substring(5)
 
@@ -76,8 +76,10 @@
                 }
             }
 
-            event.preventDefault()
-            event.target.blur()
+            if (event.keyCode == 13) {
+                event.preventDefault()
+                event.target.blur()
+            }
         }
 
         function appendItem() {
@@ -88,49 +90,54 @@
             console.log(newItemText)
             console.log(newItemLink)
 
-            if (newItemText !== '') {
-                var newItem = document.createElement('div');
-                newItem.className = 'list-item';
-
-                newid = Math.max(...list.items.map(item => item.id)) + 1;
-                newRank = Math.max(...list.items.map(item => item.rank)) + 1;
-
-                newItem.id = 'item-' + newid
-
-                newListItem = {
-                    'id': newid,
-                    'isChecked': false,
-                    'name': newItemText,
-                    'rank': newRank,
-                    'link': null,
-                }
-
-                if(newItemLink != '') {
-                    if(newItemLink.indexOf(':') != -1) {
-                        newItemLink = newItemLink.substring(newItemLink.indexOf(':')+1)
-                    }
-
-                    newListItem['link'] = newItemLink
-                    newItem.innerHTML = `<div class="item-rank">${newRank}</div>
-                                         <a href="//` + newItemLink + `" target="_blank">
-                                            <div class="item-name" contenteditable="true" onkeypress="updateItem(this, event)"">${newItemText}</div>
-                                         <\a>
-                                         <div class="delete-button" onclick="deleteItem(this)">Remove</div>`;
-                } else {
-                    newItem.innerHTML = `<div class="item-rank">${newRank}</div>
-                                         <div class="item-name" contenteditable="true" onkeypress="updateItem(this, event)"">${newItemText}</div>
-                                         <div class="delete-button" onclick="deleteItem(this)">Remove</div>`;
-                }
-
-                
-                list.items.push(newListItem)
-
-                var itemContainer = document.getElementById('sortable-list');
-                itemContainer.appendChild(newItem);
-
-                document.getElementById('newItem-name').value = ''; // Clear the input field
-                document.getElementById('newItem-link').value = ''; // Clear the input field
+            if (newItemText == '') {
+                alert("New item textbox is empty")
+                return
             }
+            var newItem = document.createElement('div');
+            newItem.className = 'list-item';
+
+            newid = Math.max(Math.max(...list.items.map(item => item.id)) + 1, 0);
+            newRank = Math.max(Math.max(...list.items.map(item => item.rank)) + 1, 0);
+
+            newItem.id = 'item-' + newid
+
+            newListItem = {
+                'id': newid,
+                'isChecked': false,
+                'checkedBy': null,
+                'name': newItemText,
+                'rank': newRank,
+                'link': null,
+            }
+
+            if(newItemLink != '') {
+                if(newItemLink.indexOf(':') != -1) {
+                    newItemLink = newItemLink.substring(newItemLink.indexOf(':')+1)
+                }
+
+                newListItem['link'] = newItemLink
+                newItem.innerHTML = `<div class="item-rank">${newRank}</div>
+                                        <a href="//` + newItemLink + `" target="_blank">
+                                        <div class="item-name" contenteditable="true" onfocusout="updateItem(this, event)" onkeypress="updateItem(this, event)">${newItemText}</div>
+                                        <\a>
+                                        <div class="delete-button" onclick="deleteItem(this)">Remove</div>
+                                        <div class="drag-handle">&#x2261;</div>`;
+            } else {
+                newItem.innerHTML = `<div class="item-rank">${newRank}</div>
+                                        <div class="item-name" contenteditable="true" onfocusout="updateItem(this, event)" onkeypress="updateItem(this, event)">${newItemText}</div>
+                                        <div class="delete-button" onclick="deleteItem(this)">Remove</div>
+                                        <div class="drag-handle">&#x2261;</div>`;
+            }
+
+            
+            list.items.push(newListItem)
+
+            var itemContainer = document.getElementById('sortable-list');
+            itemContainer.appendChild(newItem);
+
+            document.getElementById('newItem-name').value = '';
+            document.getElementById('newItem-link').value = '';
         }
 
         function deleteItem(element) {

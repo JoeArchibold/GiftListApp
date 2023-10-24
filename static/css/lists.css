@@ -37,13 +37,23 @@ td, th {
 }
 
 .list-item {
+    display: flex;
+    justify-content: center;
     white-space: normal;
     padding: 5px;
     box-sizing: border-box;
     overflow: hidden;
 }
 
-.item-rank, .delete-button {
+.drag-handle {
+    border-left: 1px solid #ddd;
+    display: inline-block;
+    cursor: move;
+    padding-inline: 10px;
+    white-space: nowrap;
+}
+
+.drag-handle, .item-rank, .delete-button {
     display: inline-block;
     vertical-align: top;
     box-sizing: border-box;
@@ -58,8 +68,7 @@ td, th {
 .item-name {
     padding-inline: 10px;
     text-align: left;
-    width: 55%;
-    display: inline-block;
+    width: 45%; /* Adjusted width to accommodate the drag handle and other elements */
     box-sizing: border-box;
     word-wrap: break-word;
 }
@@ -80,4 +89,26 @@ label, input, button {
 button {
     background-color: #f4f4f4;
     cursor: pointer;
+}
+
+
+
+@media only screen and (max-width: 600px) {
+    label, input, button {
+        margin-block: 5px; /* Adjust the margin for smaller screens */
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .logout {
+        margin: 10px 0; /* Adjust the margin for smaller screens */
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .main-container {
+        width: 90%; /* Adjust the width for smaller screens */
+        margin: 50px auto; /* Adjust the margin for smaller screens */
+        padding: 15px; /* Adjust the padding for smaller screens */
+    }
 }

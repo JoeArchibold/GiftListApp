@@ -272,11 +272,15 @@ def listEdit(listId):
             if item == "":
                 continue
 
+            maxid = 0
+            if(curList['items']):
+                maxid = max(curList['items'], key=lambda x: x['id'])['id'] + 1
+            
             curList['items'].append({
                 "name": item,
                 "isChecked": False,
                 "rank": 0,
-                "id": max(curList['items'], key=lambda x: x['id'])['id'] + 1
+                "id": maxid
             })
         
         curList['items'] = sorted(curList['items'], key=lambda x: int(x['rank']) if int(x['rank']) > 0 else 1000000)

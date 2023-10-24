@@ -5,7 +5,6 @@ body {
     background-color: #f4f4f4;
 }
 
-
 .main-container {
     text-align: center;
     width: 80%;
@@ -17,9 +16,8 @@ body {
 
 .logout {
     border-radius: 10%;
-    border-width: 1px;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    margin: 15px 0;
     background-color: rgb(247, 79, 79);
 }
 
@@ -33,35 +31,53 @@ table {
     width: 80%;
 }
 
-td {
+td, th {
     border: 1px solid gray;
     padding: 0.25em;
 }
 
-.item-name {
-    padding-left: 10px;
-    text-align: left;
-    width: 75%
-}
-
 .list-item {
-   white-space: nowrap; 
+    white-space: normal;
+    padding: 5px;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
-.list-item div {
+.item-rank, .delete-button {
     display: inline-block;
+    vertical-align: top;
+    box-sizing: border-box;
 }
 
-.purchased {
-    width: 25%;
+.item-rank {
+    border-right: 1px solid #ddd;
+    padding-inline: 10px;
+    margin-right: 10px;
 }
 
-th {
-    border: 1px solid black;
-    padding: 0.25em;
-    background-color: #ddd;
+.item-name {
+    padding-inline: 10px;
+    text-align: left;
+    width: 55%;
+    display: inline-block;
+    box-sizing: border-box;
+    word-wrap: break-word;
 }
 
-.spacer {
-    height: 25px;
+.delete-button {
+    border-left: 1px solid #ddd;
+    padding-inline: 10px;
+    margin-left: 10px;
+}
+
+label, input, button {
+    padding: 5px;
+    margin-block: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+}
+
+button {
+    background-color: #f4f4f4;
+    cursor: pointer;
 }

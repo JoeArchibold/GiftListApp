@@ -17,13 +17,19 @@
 <body>
     <div class="main-container">
 
-        <h1 contenteditable="true" enterkeyhint="done" onfocusout="updateName(this, event)" onkeypress="updateName(this, event)">{{ list.name }}</h1>
+        <h1 contenteditable="true" enterkeyhint="done" onkeydown="ignoreEnter(event)" onfocusout="updateName(this, event)" onkeyup="updateName(this, event)">{{ list.name }}</h1>
 
         <div class="item" id="sortable-list">
             {% for item in list['items'] %}
             <div class="list-item" id="item-{{item.id}}">
                 <div class="item-rank">{{item.rank}}</div>
-                <div class="item-name" contenteditable="true" onfocusout="updateItem(this, event)" onkeyup="updateItem(this, event)">{{item.name}}</div>
+
+                {% if item.link %}
+                    <a target="_blank" href="//{{item.link}}" class="item-link"><div class="item-name" contenteditable="true" onkeydown="ignoreEnter(event)" onfocusout="updateItem(this, event)" onkeyup="updateItem(this, event)">{{item.name}}</div></a>
+                {% else %}
+                    <div class="item-name" contenteditable="true" onkeydown="ignoreEnter(event)" onfocusout="updateItem(this, event)" onkeyup="updateItem(this, event)">{{item.name}}</div>
+                {% endif %}
+
                 <div class="delete-button" onclick="deleteItem(this)">Remove</div>
                 <div class="drag-handle">&#x2261;</div>
             </div>
@@ -47,9 +53,11 @@
 
     <script type="text/javascript">
         var list = {{list|tojson}};
-        console.log(list)
+        console.log(list);
 
-        updateRanks()
+        var unsavedChanges = false;
+        updateRanks();
+        unsavedChanges = false;
 
         function inputEnter(event) {
             if (event.keyCode == 13) {
@@ -58,12 +66,22 @@
         }
 
         function updateName(element, event) {
-            if (event.keyCode != 13) return true;
-
             list.name = element.innerHTML
+
+            unsavedChanges = true;
+
+            if (event.keyCode != 13) return true;
 
             event.preventDefault()
             event.target.blur()
+        }
+
+        function ignoreEnter(event) {
+            if(event.keyCode == 13) {
+                event.preventDefault();
+                return false;
+            }
+
         }
 
         function updateItem(element, event) {
@@ -76,10 +94,13 @@
                 }
             }
 
+            unsavedChanges = true;
+
             if (event.keyCode == 13) {
                 event.preventDefault()
                 event.target.blur()
             }
+            
         }
 
         function appendItem() {
@@ -118,7 +139,7 @@
 
                 newListItem['link'] = newItemLink
                 newItem.innerHTML = `<div class="item-rank">${newRank}</div>
-                                        <a href="//` + newItemLink + `" target="_blank" class="item-link">
+                                        <a target="_blank" href="//` + newItemLink + `" target="_blank" class="item-link">
                                         <div class="item-name" contenteditable="true" onfocusout="updateItem(this, event)" onkeypress="updateItem(this, event)">${newItemText}</div>
                                         </a>
                                         <div class="delete-button" onclick="deleteItem(this)">Remove</div>
@@ -138,6 +159,7 @@
 
             document.getElementById('newItem-name').value = '';
             document.getElementById('newItem-link').value = '';
+            unsavedChanges = true;
         }
 
         function deleteItem(element) {
@@ -171,6 +193,8 @@
                     }
                 }
             }
+            
+            unsavedChanges = true;
         }
 
         function saveList() {
@@ -184,12 +208,23 @@
                 body: JSON.stringify({ list: list }),
             })
             .then(response => response.json())
-            .then(data => alert('List saved successfully'))
+            .then(data => {
+                unsavedChanges = false;
+                alert('List saved successfully')
+            })
             .catch(error => {
                 console.error('Error:', error);
                 alert('An error occured, please try again later or contact Joe for help')
             });
         }
+
+        window.addEventListener('beforeunload', function (e) {
+            if (unsavedChanges) {
+                const message = 'You have unsaved changes. Are you sure you want to leave?';
+                e.returnValue = message;
+                return message;
+            }
+        });
 
     </script>
 

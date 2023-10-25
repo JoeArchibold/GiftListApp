@@ -118,9 +118,9 @@
 
                 newListItem['link'] = newItemLink
                 newItem.innerHTML = `<div class="item-rank">${newRank}</div>
-                                        <a href="//` + newItemLink + `" target="_blank">
+                                        <a href="//` + newItemLink + `" target="_blank" class="item-link">
                                         <div class="item-name" contenteditable="true" onfocusout="updateItem(this, event)" onkeypress="updateItem(this, event)">${newItemText}</div>
-                                        <\a>
+                                        </a>
                                         <div class="delete-button" onclick="deleteItem(this)">Remove</div>
                                         <div class="drag-handle">&#x2261;</div>`;
             } else {

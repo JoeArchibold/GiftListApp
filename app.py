@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, abort
 from pymongo import MongoClient
 import json, hashlib, os, secrets
 import bson
@@ -6,10 +6,18 @@ import bson
 app = Flask(__name__, static_folder='static')
 app.config['SECRET_KEY'] = secrets.token_urlsafe(16)
 
-with open('secrets/devpassword.txt') as f:
-    password = f.read()
+devmode = True
 
-connection_string = f'mongodb+srv://jarchibold:{password}@giftlistdevdb.edublop.mongodb.net/?retryWrites=true&w=majority'
+if(devmode) :
+    with open('secrets/devpassword.txt') as f:
+        password = f.read()
+
+    connection_string = f'mongodb+srv://jarchibold:{password}@giftlistdevdb.edublop.mongodb.net/?retryWrites=true&w=majority'
+else:
+    with open('secrets/passwords.txt') as f:
+        password = f.read()
+
+    connection_string = f'mongodb+srv://jarchibold:{password}@giftlistprod.zsqr6ad.mongodb.net/?retryWrites=true&w=majority'
 
 client = MongoClient(connection_string)
 
@@ -47,10 +55,12 @@ def fixItems():
     lists = json.loads(response.data)
 
     for curlist in lists:
-        for val, item in enumerate(curlist['items']):
-            curlist['items'][val]['id'] = val
+        for item in curlist['items']:
+            item['checkedBy'] = None
 
         db.lists.update_one({'_id': int(curlist['_id'])}, {'$set': curlist})
+    
+    print("Done!")
         
 
 
@@ -156,7 +166,7 @@ def home():
     userLists = sorted(userLists, key=lambda x: x['name'])
     otherLists = sorted(otherLists, key=lambda x: x['name'])
 
-    return render_template("index.html", userLists=userLists, otherLists=otherLists, name=user['name']['first'])
+    return render_template("home.html", userLists=userLists, otherLists=otherLists, name=user['name']['first'])
 
 @app.route('/lists/create', methods=["GET", "POST"])
 def create():
@@ -266,17 +276,34 @@ def listGuestDev(listId):
     if curList['owner'] == user['username']:
         return redirect(f'/lists/{listId}/owner')
 
-    curList = getList(listId)
     if request.method == "POST":
-        for val,item in enumerate(curList['items']):
-            if request.form.get(f'{item["id"]}-pur') == 'on':
-                curList['items'][val]['isChecked'] = True
-            else:
-                curList['items'][val]['isChecked'] = False
+        data = request.json
+        change = data.get('change', {})
+
+        change['id'] = int(change['id'])
+
+        for item in curList['items']:
+            if(item['id'] == change['id']):
+                if item['checkedBy'] != user['username'] and item['checkedBy']:
+                    abort(401)
+
+                if change['nowChecked']:
+                    item['checkedBy'] = user['username']
+                    item['isChecked'] = True
+                else:
+                    item['checkedBy'] = None
+                    item['isChecked'] = False
 
         db.lists.update_one({'_id': int(listId)}, {'$set': curList})
 
-    return render_template("listGuestDev.html", list=curList)
+        return jsonify({'message': 'Data received successfully'})
+
+    copylist = curList.copy()
+
+    for item in copylist['items']:
+        item['locked'] = (item["isChecked"] and item["checkedBy"] != user['username'])
+
+    return render_template("listGuestDev.html", list=copylist)
 
 
 # Depracated:

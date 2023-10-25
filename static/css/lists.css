@@ -16,7 +16,7 @@ body {
 
 .logout {
     border-radius: 10%;
-    border: 1px solid #ddd;
+    border: 1px solid #aaa;
     margin: 15px 0;
     background-color: rgb(247, 79, 79);
 }
@@ -46,13 +46,13 @@ td, th {
 }
 
 .drag-handle {
-    border-left: 1px solid #ddd;
+    border-left: 1px solid #aaa;
     display: inline-block;
     cursor: move;
     white-space: nowrap;
 }
 
-.drag-handle, .item-rank, .delete-button {
+.drag-handle, .item-rank, .delete-button, .purchase-button, .unpurchase-button {
     display: inline-block;
     vertical-align: top;
     box-sizing: border-box;
@@ -66,7 +66,7 @@ td, th {
 }
 
 .item-rank {
-    border-right: 1px solid #ddd;
+    border-right: 1px solid #aaa;
     margin-right: 10px;
 }
 
@@ -84,8 +84,9 @@ a > .item-name {
     word-wrap: break-word;
 }
 
-.delete-button {
-    border-left: 1px solid #ddd;
+.delete-button, .purchase-button, .unpurchase-button{
+    cursor: pointer;
+    border-left: 1px solid #aaa;
     margin-left: 10px;
 }
 
@@ -93,7 +94,7 @@ label, input, button {
     padding: 5px;
     margin-block: 10px;
     box-sizing: border-box;
-    border: 1px solid #ddd;
+    border: 1px solid #aaa;
 }
 
 button {
@@ -101,20 +102,36 @@ button {
     cursor: pointer;
 }
 
+.delete-button {
+    color: red;
+}
 
+.purchase-button {
+    color: green;
+}
+
+.unpurchase-button {
+    color: red;
+}
+
+.locked .item-name, .locked a {
+    width: auto;
+}
+
+h3 {
+    margin-bottom: 0;
+    margin-top: 10px;
+    border-top: 1px solid #999;
+}
 
 @media only screen and (max-width: 600px) {
     label, input, button {
-        margin-block: 5px; /* Adjust the margin for smaller screens */
-    }
-
-    .logout {
-        margin: 10px 0; /* Adjust the margin for smaller screens */
+        margin-block: 5px;
     }
 
     .main-container {
-        width: 90%; /* Adjust the width for smaller screens */
-        margin: 50px auto; /* Adjust the margin for smaller screens */
-        padding: 15px; /* Adjust the padding for smaller screens */
+        width: 90%; 
+        margin: 50px auto; 
+        padding: 15px; 
     }
 }

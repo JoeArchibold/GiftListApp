@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/lists.css">
+    <title>{{ list.name }}</title>
+</head>
+
+<body>
+    <div class="main-container">
+
+        <h1 contenteditable="true" enterkeyhint="done" onkeydown="ignoreEnter(event)" onfocusout="updateName(this, event)" onkeyup="updateName(this, event)">{{ list.name }}</h1>
+
+        <div class="item" id="sortable-list">
+            {% for item in list['items'] %}
+            <div class="list-item" id="item-{{item.id}}">
+                <div class="item-rank">{{item.rank}}</div>
+
+                {% if item.link %}
+                    <a target="_blank" href="//{{item.link}}" class="item-link"><div class="item-name">{{item.name}}</div></a>
+                {% else %}
+                    <div class="item-name">{{item.name}}</div>
+                {% endif %}
+
+                <div class="delete-button">Remove</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="/lists"><button>Home</button></a>
+
+        <button onclick="saveList()">Save List</button>
+
+    </div>
+
+</body>
+</html>

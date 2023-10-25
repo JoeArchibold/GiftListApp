@@ -255,6 +255,29 @@ def listGuest(listId):
 
     return render_template("listGuest.html", list=curList)
 
+@app.route('/lists/<listId>/guestdev', methods=["GET", "POST"])
+def listGuestDev(listId):
+    if session.get('loggedIn') == None:
+        return redirect(url_for("login"))
+
+    user = db.users.find_one({'_id': bson.ObjectId(session['userId'])})
+    curList = getList(listId)
+
+    if curList['owner'] == user['username']:
+        return redirect(f'/lists/{listId}/owner')
+
+    curList = getList(listId)
+    if request.method == "POST":
+        for val,item in enumerate(curList['items']):
+            if request.form.get(f'{item["id"]}-pur') == 'on':
+                curList['items'][val]['isChecked'] = True
+            else:
+                curList['items'][val]['isChecked'] = False
+
+        db.lists.update_one({'_id': int(listId)}, {'$set': curList})
+
+    return render_template("listGuestDev.html", list=curList)
+
 
 # Depracated:
 # @app.route('/lists/<listId>/edit', methods=["GET", "POST"])

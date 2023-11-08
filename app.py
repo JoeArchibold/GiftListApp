@@ -6,7 +6,7 @@ import bson
 app = Flask(__name__, static_folder='static')
 app.config['SECRET_KEY'] = secrets.token_urlsafe(16)
 
-devmode = False
+devmode = True
 
 if(devmode) :
     with open('secrets/devpassword.txt') as f:

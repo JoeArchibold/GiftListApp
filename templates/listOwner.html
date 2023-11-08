@@ -47,7 +47,6 @@
 
     <script type="text/javascript">
         var list = {{list|tojson}};
-        console.log(list);
 
         var unsavedChanges = false;
         updateRanks();
@@ -154,6 +153,8 @@
             document.getElementById('newItem-name').value = '';
             document.getElementById('newItem-link').value = '';
             unsavedChanges = true;
+
+            updateRanks()
         }
 
         function deleteItem(element) {
@@ -178,8 +179,6 @@
             for(var i = 0; i < listItems.length; i++) {
                 curItemId = listItems[i].id.substring(5)
                 itemRank = listItems[i].getElementsByClassName('item-rank')[0]
-                // console.log(listItems[i])
-                // console.log(itemRank)
                 itemRank.innerHTML = i+1
                 for(var j = 0; j < list.items.length; j++) {
                     if(curItemId == list.items[j].id) {

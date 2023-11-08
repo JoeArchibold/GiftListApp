@@ -55,13 +55,13 @@ def fixItems():
     lists = json.loads(response.data)
 
     for curlist in lists:
-        for item in curlist['items']:
-            item['checkedBy'] = None
+        for i, item in enumerate(curlist['items']):
+            # item['checkedBy'] = None
+            item['rank'] = i + 1
 
         db.lists.update_one({'_id': int(curlist['_id'])}, {'$set': curlist})
     
     print("Done!")
-        
 
 
 

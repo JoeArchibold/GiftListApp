@@ -283,54 +283,5 @@ def listGuest(listId):
     return render_template("listGuest.html", list=copylist)
 
 
-# Depracated:
-# @app.route('/lists/<listId>/edit', methods=["GET", "POST"])
-# def listEdit(listId):
-#     if session.get('loggedIn') == None:
-#         return redirect(url_for("login"))
-
-#     user = db.users.find_one({'_id': bson.ObjectId(session['userId'])})
-#     curList = getList(listId)
-
-#     if curList['owner'] != user['username']:
-#         return redirect(f'/lists/{listId}/guest')
-
-#     curList = getList(listId)
-
-#     if request.method == "POST":
-#         for val,item in enumerate(curList['items']):
-#             if request.form.get(f'{item["id"]}-remove') == 'on':
-#                 curList['items'][val] = None
-#             else:
-#                 curList['items'][val]['rank'] = request.form.get(f'{item["id"]}-rank')
-#                 curList['items'][val]['name'] = request.form.get(f'{item["id"]}-name')
-
-#         curList['items'] = list(filter(None, curList['items']))
-
-#         inString = [str.strip() for str in request.form.get("textAdd").split(',')]
-
-
-#         for item in inString:
-#             if item == "":
-#                 continue
-
-#             curList['items'].append({
-#                 "name": item,
-#                 "isChecked": False,
-#                 "rank": 0,
-#                 "id": max(curList['items'], key=lambda x: x['id'])['id'] + 1
-#             })
-        
-#         curList['items'] = sorted(curList['items'], key=lambda x: int(x['rank']) if int(x['rank']) > 0 else 1000000)
-
-#         curList['name'] = request.form.get("listName")
-
-#         db.lists.update_one({'_id': int(listId)}, {'$set': curList})
-
-#         return redirect(f'/lists/{listId}/owner')
-
-#     return render_template("listEdit.html", list=curList)
-
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, threaded=False, debug=True)

@@ -6,7 +6,7 @@ import bson
 app = Flask(__name__, static_folder='static')
 app.config['SECRET_KEY'] = secrets.token_urlsafe(16)
 
-devmode = True
+devmode = False
 
 if(devmode) :
     with open('secrets/devpassword.txt') as f:
@@ -24,42 +24,29 @@ client = MongoClient(connection_string)
 
 db = client["GiftListDevDB"]
 
-def generateLists():
-    returnList = []
-
-    db.lists.delete_many({})
-    for i in range(10):
-        listToAdd = {
-            "_id": i,
-            "name": f'List {i}', 
-            "items": [],
-            "owner": "randomUser"
-        }
-        for j in range(5):
-            itemToAdd = {
-                "name": f'Item {j}',
-                "isChecked": False,
-                "rank": j + 1,
-                "id": j
-            }
-            listToAdd['items'].append(itemToAdd)
-        returnList.append(listToAdd)
-    
-    db.lists.insert_many(returnList) 
-
-    return returnList
-
 def fixItems():
     documents = list(db.lists.find())
     response = jsonify(documents)
     lists = json.loads(response.data)
 
     for curlist in lists:
-        for i, item in enumerate(curlist['items']):
-            # item['checkedBy'] = None
-            item['rank'] = i + 1
-
-        db.lists.update_one({'_id': int(curlist['_id'])}, {'$set': curlist})
+        print(curlist['name'])
+        updated = False
+        for item in curlist['items']:
+            try:
+                pass
+                if item["checkedBy"]:
+                    pass
+            except:
+                print(f'   {item["name"]}')
+                item['checkedBy'] = None
+                item['link'] = None
+                updated = True
+            # item['rank'] = i + 1
+        
+        if updated:
+            pass
+            # db.lists.update_one({'_id': int(curlist['_id'])}, {'$set': curlist})
     
     print("Done!")
 
@@ -186,10 +173,12 @@ def create():
                 continue
 
             itemsToAdd.append({
-                "name": item,
+                "id": len(itemsToAdd),
                 "isChecked": False,
-                "rank": 0,
-                "id": len(itemsToAdd)
+                "checkedBy": None,
+                "name": item,
+                "rank": len(itemsToAdd),
+                "link": None,
             })
 
         new_id = -1
